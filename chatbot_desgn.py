@@ -19,6 +19,9 @@ from selenium.webdriver.support import expected_conditions as EC
 import webbrowser
 from nltk.tokenize import word_tokenize
 import pafy
+import requests
+#from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup 
 #from weather import Weather,Unit
 
 know=0
@@ -80,6 +83,7 @@ def response(message):
     elif re.search(r"\b(booking|book)\b",message) is not None:
         text=open("booking.txt","a")
         if "hotel" in message:
+            
             ext="https://www.google.com/search?q="
             print("Can u please specify the palce where you want to book")
             detail_place=input()
@@ -89,6 +93,17 @@ def response(message):
             url=ext+msg
             text.write(msg)
             text.close()
+            page = requests.get(url)
+            soup = BeautifulSoup(page.content)
+            count=0
+#import re
+            links = soup.findAll("a")
+            for link in  soup.find_all("a",href=re.compile("(?<=/url\?q=)(htt.*://.*)")):
+                if count<5:   
+                    webbrowser.open(re.split(":(?=http)",link["href"].replace("/url?q=",""))[0],new=1)
+                else:
+                    break
+                count+=1  
             webbrowser.open(url,new=1)
             res="Here are the options"
         elif "bus" in message:
@@ -108,6 +123,53 @@ def response(message):
             url=ext+msg
             text.write(msg)
             text.close()
+            page = requests.get(url)
+            soup = BeautifulSoup(page.content)
+            count=0
+#import re
+            links = soup.findAll("a")
+            for link in  soup.find_all("a",href=re.compile("(?<=/url\?q=)(htt.*://.*)")):
+                if count<5:   
+                    webbrowser.open(re.split(":(?=http)",link["href"].replace("/url?q=",""))[0],new=1)
+                else:
+                    break
+                count+=1
+            webbrowser.open(url,new=1)
+            res="Here are the options"
+        elif "room" in message:
+            ext="https://www.google.com/search?q="
+            print("Can u please specify your place")
+            detail_dest=input()
+            #print("Can u please specify your source")
+            #detail_source=input()
+            print("can u please specify the on the date of stay")
+            detail_date=input()
+            print("3 star or 5 star")
+            detail_desc=input()
+
+            #detail_time=input()
+            print("AC or NON AC")
+            AC=input()
+            print("any particular hotel u want")
+            choice=input()
+            if re.search(r"\b(no|none|nothing)\b",choice) is not None:
+                choice=""
+            mesg=AC+" room " +choice+" "+detail_desc+" hotel booking in "+str(detail_dest)+" from "+str(detail_date)
+            msg=mesg.replace(" ","+")
+            url=ext+msg
+            text.write(msg)
+            text.close()
+            page = requests.get(url)
+            soup = BeautifulSoup(page.content)
+            count=0
+#import re
+            links = soup.findAll("a")
+            for link in  soup.find_all("a",href=re.compile("(?<=/url\?q=)(htt.*://.*)")):
+                if count<5:   
+                    webbrowser.open(re.split(":(?=http)",link["href"].replace("/url?q=",""))[0],new=1)
+                else:
+                    break
+                count+=1
             webbrowser.open(url,new=1)
             res="Here are the options"
         elif "train" in message:
@@ -127,6 +189,17 @@ def response(message):
             url=ext+msg
             text.write(msg)
             text.close()
+            page = requests.get(url)
+            soup = BeautifulSoup(page.content)
+            count=0
+#import re
+            links = soup.findAll("a")
+            for link in  soup.find_all("a",href=re.compile("(?<=/url\?q=)(htt.*://.*)")):
+                if count<5:   
+                    webbrowser.open(re.split(":(?=http)",link["href"].replace("/url?q=",""))[0],new=1)
+                else:
+                    break
+                count+=1
             webbrowser.open(url,new=1)
             res="Here are the options"
         elif "flight" in message:
@@ -146,6 +219,17 @@ def response(message):
             url=ext+msg
             text.write(msg)
             text.close()
+            page = requests.get(url)
+            soup = BeautifulSoup(page.content)
+            count=0
+#import re
+            links = soup.findAll("a")
+            for link in  soup.find_all("a",href=re.compile("(?<=/url\?q=)(htt.*://.*)")):
+                if count<5:   
+                    webbrowser.open(re.split(":(?=http)",link["href"].replace("/url?q=",""))[0],new=1)
+                else:
+                    break
+                count+=1
             webbrowser.open(url,new=1)
             res="Here are the options"
         elif "movie" in message:
@@ -165,6 +249,17 @@ def response(message):
             url=ext+msg
             text.write(msg)
             text.close()
+            page = requests.get(url)
+            soup = BeautifulSoup(page.content)
+            count=0
+#import re
+            links = soup.findAll("a")
+            for link in  soup.find_all("a",href=re.compile("(?<=/url\?q=)(htt.*://.*)")):
+                if count<5:   
+                    webbrowser.open(re.split(":(?=http)",link["href"].replace("/url?q=",""))[0],new=1)
+                else:
+                    break
+                count+=1
             webbrowser.open(url,new=1)
             res="Here are the options"
         else:
@@ -217,6 +312,74 @@ def response(message):
         #x=driver.find_element_by_id("video-title").getAttribute("ended")
         #print(x)
         res="Here you go"
+        know=0
+    
+    elif re.search(r"\b(order|ordering)\b",message) is not None:
+        know=0
+        text=open("choice.txt","a")
+        print("do you want some special service like amazon,dominoz,zomato")
+        service=input()
+        ext="https://www.google.com/search?q="
+        if re.search(r"\b(no|none|nothing)\b",service) is not None:
+            service=""
+        demand=re.search(r"\b(order(.*)|ordering(.*))\b",message).group(0)
+        print("can u please give some details of the offer ")
+        details=input()
+        if re.search(r"\b(no|none|nothing)\b",details) is not None:
+            search=ext+service+demand
+            page = requests.get(search)
+            soup = BeautifulSoup(page.content)
+            count=0
+#import re
+            links = soup.findAll("a")
+            for link in  soup.find_all("a",href=re.compile("(?<=/url\?q=)(htt.*://.*)")):
+                if count<3:   
+                    webbrowser.open(re.split(":(?=http)",link["href"].replace("/url?q=",""))[0],new=1)
+                else:
+                    break
+                count+=1
+            webbrowser.open(search,new=1)
+            text.write(search)
+            text.close()
+            res="Here are the options if u provide more details"
+        elif re.search(r"\b(what|as in|like)\b",details) is not None:
+            print("give me some details like title,company,flavour,model which is favourable ")
+            desc=input()
+            url=ext+service+"+"+details+"+"+desc
+            page = requests.get(url)
+            soup = BeautifulSoup(page.content)
+            count=0
+#import re
+            links = soup.findAll("a")
+            for link in  soup.find_all("a",href=re.compile("(?<=/url\?q=)(htt.*://.*)")):
+                if count<3:   
+                    webbrowser.open(re.split(":(?=http)",link["href"].replace("/url?q=",""))[0],new=1)
+                else:
+                    break
+                count+=1
+            text.write(url)
+            text.close()
+            webbrowser.open(url,new=1)
+            res="Here are the options"
+        else:
+            desc=""
+            url=ext+service+"+"+details+"+"+desc
+            page = requests.get(url)
+            soup = BeautifulSoup(page.content)
+            count=0
+#import re
+            links = soup.findAll("a")
+            for link in  soup.find_all("a",href=re.compile("(?<=/url\?q=)(htt.*://.*)")):
+                if count<3:   
+                    webbrowser.open(re.split(":(?=http)",link["href"].replace("/url?q=",""))[0],new=1)
+                else:
+                    break
+                count+=1
+            text.write(url)
+            text.close()
+            webbrowser.open(url,new=1)
+            res="Here are the options"
+
     elif know==1 and re.search(r"\b(i|my|he|hi s|we|our|they|their|its|it is)\b",message) is not None :
         res="Thank you,I will remember"
         text=open("record.txt","a")
@@ -234,15 +397,35 @@ def response(message):
     elif message in responses:
         know=0
         res=random.choice(responses[message])
-    else:
-        if re.search(r"\b(which|who|what|how|when)\b",message.split(" ")[0]) is not None:
+    elif re.search(r"\b(which|who|what|how|when)\b",message) is not None and re.search(r"\b(me|i|my|we|our|they|their|he|his|she|her)\b",message) is None:
+
+
+        res="i am searching the results"
+        ext="https://www.google.com/search?q="
+        know=0
+        msg=message.replace(" ","+")
+        url=ext+msg
+        page = requests.get(url)
+        soup = BeautifulSoup(page.content)
+        count=0
+#import re
+        links = soup.findAll("a")
+        for link in  soup.find_all("a",href=re.compile("(?<=/url\?q=)(htt.*://.*)")):
+            if count<3:   
+                webbrowser.open(re.split(":(?=http)",link["href"].replace("/url?q=",""))[0],new=1)
+            else:
+                break
+            count+=1
+        webbrowser.open(url,new=1)
+    
+    elif re.search(r"\b(which|who|what|how|when)\b",message) is not None and re.search(r"\b(me|i|my|we|our|they|their|he|his|she|her)\b",message) is not None:
             res=random.choice(responses_dont)
             text=open("record.txt","a")
             know=1
             text.write(message+"\n")
 
             text.close()
-        else:
+    else:
             res="sorry, i dont understand you but here is some matching searches"
             ext="https://www.google.com/search?q="
             msg=message.replace(" ","+")
